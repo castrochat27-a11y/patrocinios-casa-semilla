@@ -2,6 +2,7 @@
   --azul: #1f4e79;
   --azul-claro: #2f6fad;
   --verde: #2e7d4f;
+  --verde-fuerte: #1f6b41;
   --naranja: #c77700;
   --rojo: #c0392b;
   --gris-fondo: #f2f5f8;
@@ -29,7 +30,7 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,.12);
 }
 .cabecera-interna {
-  max-width: 1300px;
+  max-width: 1320px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -37,8 +38,7 @@ body {
   gap: 16px;
   flex-wrap: wrap;
 }
-.cabecera h1 { margin: 0; font-size: 1.45rem; }
-.sub { margin: 3px 0 0; opacity: .85; font-size: .9rem; }
+.cabecera h1 { margin: 0; font-size: 1.42rem; }
 
 .btn-excel {
   background: #fff;
@@ -53,7 +53,7 @@ body {
 .btn-excel:hover { background: #e8eef4; }
 
 /* ---------- Contenedor ---------- */
-.contenedor { max-width: 1300px; margin: 0 auto; padding: 22px 20px 70px; }
+.contenedor { max-width: 1320px; margin: 0 auto; padding: 22px 20px 70px; }
 
 /* ---------- Aviso de base de datos ---------- */
 .aviso-bd {
@@ -73,7 +73,7 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 14px;
-  margin-bottom: 22px;
+  margin-bottom: 18px;
 }
 .tarjeta {
   background: #fff;
@@ -89,38 +89,25 @@ body {
 .tarjeta .etiqueta { font-size: .82rem; color: var(--texto-suave); }
 .tarjeta.destacada .etiqueta { color: rgba(255,255,255,.85); }
 
-/* ---------- Pestañas ---------- */
-.pestanas { display: flex; gap: 6px; margin-bottom: 0; flex-wrap: wrap; }
-.pestana {
-  background: #e3eaf1;
-  border: 1px solid var(--gris-borde);
-  border-bottom: none;
-  color: var(--texto-suave);
-  padding: 12px 20px;
-  border-radius: var(--radio) var(--radio) 0 0;
-  cursor: pointer;
-  font-size: .93rem;
-  font-weight: 600;
-}
-.pestana:hover { background: #d6e0ea; }
-.pestana.activa { background: #fff; color: var(--azul); border-color: var(--gris-borde); }
-
-.panel { display: none; }
-.panel.activo { display: block; }
-
 /* ---------- Cajas ---------- */
 .caja {
   background: #fff;
   border: 1px solid var(--gris-borde);
-  border-radius: 0 var(--radio) var(--radio) var(--radio);
+  border-radius: var(--radio);
   padding: 20px;
   margin-bottom: 18px;
 }
-.caja + .caja { border-radius: var(--radio); }
-.caja h2 { margin: 0 0 16px; font-size: 1.08rem; color: var(--azul); }
+.caja h2 { margin: 0 0 6px; font-size: 1.08rem; color: var(--azul); }
+.nota-form {
+  margin: 0 0 16px;
+  font-size: .87rem;
+  color: var(--texto-suave);
+  line-height: 1.5;
+}
+.caja-tabla { border-radius: 0 var(--radio) var(--radio) var(--radio); }
 
 /* ---------- Formulario ---------- */
-.formulario {
+#formulario {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 14px;
@@ -128,6 +115,7 @@ body {
 .campo { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
 .campo.ancho-2 { grid-column: span 2; }
 .campo.ancho-4 { grid-column: span 4; }
+.campo.atenuado { opacity: .55; }
 
 label { font-size: .82rem; font-weight: 600; color: #3c4a58; }
 .req { color: var(--rojo); }
@@ -149,7 +137,7 @@ input:focus, select:focus, textarea:focus {
 }
 textarea { resize: vertical; }
 
-.ayuda { font-size: .76rem; color: var(--texto-suave); font-style: italic; min-height: 0; }
+.ayuda { font-size: .76rem; color: var(--texto-suave); font-style: italic; }
 
 .acciones { flex-direction: row; gap: 10px; align-items: center; }
 
@@ -164,19 +152,54 @@ button {
 }
 .btn-principal { background: var(--azul); color: #fff; }
 .btn-principal:hover { background: #17395a; }
+.btn-principal:disabled { opacity: .6; cursor: default; }
 .btn-secundario { background: #e6ecf2; color: var(--texto); }
 .btn-secundario:hover { background: #d5dee7; }
 .btn-peligro { background: var(--rojo); color: #fff; }
 .btn-peligro:hover { background: #a23023; }
 
+/* ---------- Pestañas por estado ---------- */
+.pestanas { display: flex; gap: 5px; flex-wrap: wrap; }
+.pestana {
+  background: #e3eaf1;
+  border: 1px solid var(--gris-borde);
+  border-bottom: none;
+  color: var(--texto-suave);
+  padding: 11px 15px;
+  border-radius: var(--radio) var(--radio) 0 0;
+  cursor: pointer;
+  font-size: .87rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.pestana:hover { background: #d6e0ea; }
+.pestana.activa { background: #fff; color: var(--azul); }
+
+.conteo {
+  background: rgba(0,0,0,.11);
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-size: .76rem;
+  font-weight: 700;
+}
+.pestana.activa .conteo { background: var(--azul); color: #fff; }
+
+.desc-pantalla {
+  margin: 0 0 14px;
+  font-size: .87rem;
+  color: var(--texto-suave);
+  font-style: italic;
+}
+
 /* ---------- Filtros ---------- */
 .filtros { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
-.filtros input { flex: 2; min-width: 200px; }
-.filtros select { flex: 1; min-width: 160px; }
+.filtros input { flex: 1; min-width: 190px; }
 
 /* ---------- Tabla ---------- */
 .tabla-scroll { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; min-width: 900px; }
+table { width: 100%; border-collapse: collapse; min-width: 1000px; }
 th, td {
   text-align: left;
   padding: 10px 9px;
@@ -190,38 +213,32 @@ th {
   text-transform: uppercase;
   letter-spacing: .04em;
   background: #f7f9fb;
-  position: sticky;
-  top: 0;
 }
 tbody tr:hover { background: #f7fafd; }
-td.celda-larga { max-width: 230px; white-space: pre-wrap; word-break: break-word; }
+td.celda-larga { max-width: 220px; white-space: pre-wrap; word-break: break-word; }
 td.numero { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
 
 .etiqueta-estado {
   display: inline-block;
   padding: 3px 9px;
   border-radius: 999px;
-  font-size: .74rem;
+  font-size: .73rem;
   font-weight: 700;
   white-space: nowrap;
   background: #e6ecf2;
   color: #46586a;
 }
-.e-primer-contacto { background: #e3edf7; color: #1f4e79; }
-.e-interes { background: #e6f0fb; color: #2f6fad; }
+.e-pendiente   { background: #ebeef1; color: #55636f; }
+.e-espera      { background: #e6f0fb; color: #2f6fad; }
 .e-negociacion { background: #fdf0dc; color: var(--naranja); }
-.e-cierre { background: #e0f2e7; color: var(--verde); }
-.e-activacion { background: #ddefe4; color: #1f6b41; }
-.e-negado { background: #fbe4e1; color: var(--rojo); }
-.e-asignado { background: #e0f2e7; color: var(--verde); }
-.e-pendiente { background: #fdf0dc; color: var(--naranja); }
-.e-contactar { background: #e6f0fb; color: #2f6fad; }
-.e-norelevante { background: #ebeef1; color: #6b7885; }
+.e-aceptada    { background: #e0f2e7; color: var(--verde); }
+.e-realizada   { background: #cfe9d9; color: var(--verde-fuerte); }
+.e-negada      { background: #fbe4e1; color: var(--rojo); }
 
 .acciones-fila { display: flex; gap: 6px; }
 .acciones-fila button { padding: 5px 11px; font-size: .78rem; }
 
-.vacio { color: var(--texto-suave); padding: 18px 4px 4px; text-align: center; }
+.vacio { color: var(--texto-suave); padding: 20px 4px 6px; text-align: center; }
 
 /* ---------- Aviso flotante ---------- */
 .aviso {
@@ -237,6 +254,8 @@ td.numero { text-align: right; white-space: nowrap; font-variant-numeric: tabula
   font-size: .9rem;
   box-shadow: 0 4px 16px rgba(0,0,0,.2);
   z-index: 60;
+  max-width: 90vw;
+  text-align: center;
 }
 .aviso.error { background: var(--rojo); }
 
@@ -255,7 +274,7 @@ td.numero { text-align: right; white-space: nowrap; font-variant-numeric: tabula
   background: #fff;
   border-radius: var(--radio);
   padding: 24px;
-  max-width: 420px;
+  max-width: 430px;
   width: 100%;
   box-shadow: 0 10px 40px rgba(0,0,0,.25);
 }
@@ -266,16 +285,17 @@ td.numero { text-align: right; white-space: nowrap; font-variant-numeric: tabula
 .oculto { display: none !important; }
 
 /* ---------- Responsive ---------- */
-@media (max-width: 900px) {
+@media (max-width: 980px) {
   .tarjetas-resumen { grid-template-columns: repeat(2, 1fr); }
-  .formulario { grid-template-columns: repeat(2, 1fr); }
+  #formulario { grid-template-columns: repeat(2, 1fr); }
   .campo.ancho-4 { grid-column: span 2; }
 }
-@media (max-width: 560px) {
+@media (max-width: 600px) {
   .tarjetas-resumen { grid-template-columns: 1fr 1fr; }
-  .formulario { grid-template-columns: 1fr; }
+  #formulario { grid-template-columns: 1fr; }
   .campo.ancho-2, .campo.ancho-4 { grid-column: span 1; }
-  .pestana { flex: 1; padding: 11px 10px; font-size: .82rem; }
+  .pestana { flex: 1 1 auto; justify-content: center; padding: 10px 11px; font-size: .8rem; }
   .caja { padding: 15px; }
-  .cabecera h1 { font-size: 1.2rem; }
+  .caja-tabla { border-radius: var(--radio); }
+  .cabecera h1 { font-size: 1.15rem; }
 }
