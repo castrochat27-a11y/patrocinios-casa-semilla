@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro de Patrocinios · Casa Semilla</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="cabecera">
+  <div class="cabecera-interna">
+    <div>
+      <h1>Registro de Patrocinios</h1>
+      <p class="sub">Casa Semilla · Equipo de Patrocinios</p>
+    </div>
+    <a class="btn-excel" href="/exportar">Descargar Excel</a>
+  </div>
+</header>
+
+<main class="contenedor">
+
+  <section class="tarjetas-resumen">
+    <div class="tarjeta"><span class="numero" id="r-posibles">0</span><span class="etiqueta">Posibles patrocinios</span></div>
+    <div class="tarjeta"><span class="numero" id="r-estado">0</span><span class="etiqueta">En seguimiento</span></div>
+    <div class="tarjeta"><span class="numero" id="r-donaciones">0</span><span class="etiqueta">Donaciones recibidas</span></div>
+    <div class="tarjeta destacada"><span class="numero" id="r-total">₡0</span><span class="etiqueta">Valor total aproximado</span></div>
+  </section>
+
+  <nav class="pestanas">
+    <button class="pestana activa" data-seccion="posibles">1. Posibles Patrocinios</button>
+    <button class="pestana" data-seccion="estado">2. Estado de Patrocinios</button>
+    <button class="pestana" data-seccion="donaciones">3. Registro de Donaciones</button>
+  </nav>
+
+  <!-- ================= SECCIÓN 1: POSIBLES PATROCINIOS ================= -->
+  <div class="panel activo" id="panel-posibles">
+    <div class="caja">
+      <h2 id="titulo-posibles">Agregar posible patrocinio</h2>
+      <form id="form-posibles" class="formulario">
+        <input type="hidden" name="id">
+        <div class="campo ancho-2">
+          <label>Empresa <span class="req">*</span></label>
+          <input type="text" name="empresa" required placeholder="Nombre de la empresa o negocio">
+        </div>
+        <div class="campo ancho-2">
+          <label>Contacto</label>
+          <input type="text" name="contacto" placeholder="Teléfono, correo, WhatsApp o Instagram">
+        </div>
+        <div class="campo">
+          <label>Clasificación</label>
+          <select name="clasificacion">
+            <option value="">— Seleccione —</option>
+            {% for c in cat.CLASIFICACIONES %}<option value="{{ c }}">{{ c }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="campo">
+          <label>Encargado</label>
+          <select name="encargado">
+            <option value="">— Seleccione —</option>
+            {% for e in cat.ENCARGADOS %}<option value="{{ e }}">{{ e }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="campo">
+          <label>Lista</label>
+          <select name="lista">
+            <option value="">— Seleccione —</option>
+            {% for l in cat.LISTAS %}<option value="{{ l }}">{{ l }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="campo">
+          <label>Valor aproximado (₡)</label>
+          <input type="number" name="valor_aproximado" min="0" step="any" placeholder="Ej. 50000">
+        </div>
+        <div class="campo ancho-4">
+          <label>Observaciones</label>
+          <textarea name="observaciones" rows="2" placeholder="Notas del contacto, seguimiento, etc."></textarea>
+        </div>
+        <div class="campo acciones ancho-4">
+          <button type="submit" class="btn-principal">Guardar</button>
+          <button type="button" class="btn-secundario cancelar oculto">Cancelar edición</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="caja">
+      <div class="filtros">
+        <input type="text" class="f-buscar" data-seccion="posibles" placeholder="Buscar empresa...">
+        <select class="f-encargado" data-seccion="posibles">
+          <option value="">Todos los encargados</option>
+          {% for e in cat.ENCARGADOS %}<option value="{{ e }}">{{ e }}</option>{% endfor %}
+        </select>
+        <select class="f-filtro" data-seccion="posibles">
+          <option value="">Toda clasificación</option>
+          {% for c in cat.CLASIFICACIONES %}<option value="{{ c }}">{{ c }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="tabla-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>Empresa</th><th>Contacto</th><th>Clasificación</th>
+              <th>Encargado</th><th>Lista</th><th>Valor aprox.</th><th>Observaciones</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody-posibles"></tbody>
+        </table>
+      </div>
+      <p class="vacio oculto" id="vacio-posibles">Aún no hay registros. Agregue el primero con el formulario de arriba.</p>
+    </div>
+  </div>
+
+  <!-- ================= SECCIÓN 2: ESTADO DE PATROCINIOS ================= -->
+  <div class="panel" id="panel-estado">
+    <div class="caja">
+      <h2 id="titulo-estado">Agregar seguimiento de patrocinio</h2>
+      <form id="form-estado" class="formulario">
+        <input type="hidden" name="id">
+        <div class="campo ancho-2">
+          <label>Empresa <span class="req">*</span></label>
+          <input type="text" name="empresa" required placeholder="Nombre de la empresa">
+        </div>
+        <div class="campo ancho-2">
+          <label>Contacto</label>
+          <input type="text" name="contacto" placeholder="Teléfono, correo, WhatsApp o Instagram">
+        </div>
+        <div class="campo">
+          <label>Estado</label>
+          <select name="estado" id="select-estado">
+            <option value="">— Seleccione —</option>
+            {% for e in cat.ESTADOS %}<option value="{{ e }}">{{ e }}</option>{% endfor %}
+          </select>
+          <small class="ayuda" id="ayuda-estado"></small>
+        </div>
+        <div class="campo">
+          <label>Encargado</label>
+          <select name="encargado">
+            <option value="">— Seleccione —</option>
+            {% for e in cat.ENCARGADOS %}<option value="{{ e }}">{{ e }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="campo">
+          <label>Tipo de Patrocinio</label>
+          <select name="tipo_patrocinio" id="select-tipo-estado">
+            <option value="">— Seleccione —</option>
+            {% for t in cat.TIPOS_PATROCINIO %}<option value="{{ t }}">{{ t }}</option>{% endfor %}
+          </select>
+          <small class="ayuda" id="ayuda-tipo-estado"></small>
+        </div>
+        <div class="campo">
+          <label>Valor aproximado (₡)</label>
+          <input type="number" name="valor_aproximado" min="0" step="any" placeholder="Ej. 50000">
+        </div>
+        <div class="campo ancho-4">
+          <label>Descripción de la posible donación</label>
+          <textarea name="descripcion" rows="2" placeholder="Ej. Impresión de 400 entradas para una actividad"></textarea>
+        </div>
+        <div class="campo acciones ancho-4">
+          <button type="submit" class="btn-principal">Guardar</button>
+          <button type="button" class="btn-secundario cancelar oculto">Cancelar edición</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="caja">
+      <div class="filtros">
+        <input type="text" class="f-buscar" data-seccion="estado" placeholder="Buscar empresa...">
+        <select class="f-encargado" data-seccion="estado">
+          <option value="">Todos los encargados</option>
+          {% for e in cat.ENCARGADOS %}<option value="{{ e }}">{{ e }}</option>{% endfor %}
+        </select>
+        <select class="f-filtro" data-seccion="estado">
+          <option value="">Todos los estados</option>
+          {% for e in cat.ESTADOS %}<option value="{{ e }}">{{ e }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="tabla-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>Empresa</th><th>Contacto</th><th>Estado</th><th>Encargado</th>
+              <th>Descripción</th><th>Tipo</th><th>Valor aprox.</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody-estado"></tbody>
+        </table>
+      </div>
+      <p class="vacio oculto" id="vacio-estado">Aún no hay registros. Agregue el primero con el formulario de arriba.</p>
+    </div>
+  </div>
+
+  <!-- ================= SECCIÓN 3: REGISTRO DE DONACIONES ================= -->
+  <div class="panel" id="panel-donaciones">
+    <div class="caja">
+      <h2 id="titulo-donaciones">Agregar donación recibida</h2>
+      <form id="form-donaciones" class="formulario">
+        <input type="hidden" name="id">
+        <div class="campo ancho-2">
+          <label>Empresa <span class="req">*</span></label>
+          <input type="text" name="empresa" required placeholder="Nombre de la empresa">
+        </div>
+        <div class="campo ancho-2">
+          <label>Contacto</label>
+          <input type="text" name="contacto" placeholder="Teléfono, correo, WhatsApp o Instagram">
+        </div>
+        <div class="campo">
+          <label>Encargado</label>
+          <select name="encargado">
+            <option value="">— Seleccione —</option>
+            {% for e in cat.ENCARGADOS %}<option value="{{ e }}">{{ e }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="campo">
+          <label>Tipo de Donación</label>
+          <select name="tipo_donacion" id="select-tipo-donacion">
+            <option value="">— Seleccione —</option>
+            {% for t in cat.TIPOS_DONACION %}<option value="{{ t }}">{{ t }}</option>{% endfor %}
+          </select>
+          <small class="ayuda" id="ayuda-tipo-donacion"></small>
+        </div>
+        <div class="campo">
+          <label>Valor aproximado (₡)</label>
+          <input type="number" name="valor_aproximado" min="0" step="any" placeholder="Ej. 50000">
+        </div>
+        <div class="campo">
+          <label>Asignación</label>
+          <select name="asignacion" id="select-asignacion">
+            <option value="">— Seleccione —</option>
+            {% for a in cat.ASIGNACIONES %}<option value="{{ a }}">{{ a }}</option>{% endfor %}
+          </select>
+          <small class="ayuda" id="ayuda-asignacion"></small>
+        </div>
+        <div class="campo ancho-2">
+          <label>Tipo de Patrocinio</label>
+          <select name="tipo_patrocinio" id="select-tipo-donacion-patro">
+            <option value="">— Seleccione —</option>
+            {% for t in cat.TIPOS_PATROCINIO %}<option value="{{ t }}">{{ t }}</option>{% endfor %}
+          </select>
+          <small class="ayuda" id="ayuda-tipo-donacion-patro"></small>
+        </div>
+        <div class="campo ancho-2">
+          <label>Descripción de la donación</label>
+          <textarea name="descripcion" rows="2" placeholder="Ej. 10 entradas, 2 cortes de pelo, etc."></textarea>
+        </div>
+        <div class="campo ancho-4">
+          <label>Observaciones adicionales</label>
+          <textarea name="observaciones" rows="2" placeholder="Ej. Información enviada a María José de actividades"></textarea>
+        </div>
+        <div class="campo acciones ancho-4">
+          <button type="submit" class="btn-principal">Guardar</button>
+          <button type="button" class="btn-secundario cancelar oculto">Cancelar edición</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="caja">
+      <div class="filtros">
+        <input type="text" class="f-buscar" data-seccion="donaciones" placeholder="Buscar empresa...">
+        <select class="f-encargado" data-seccion="donaciones">
+          <option value="">Todos los encargados</option>
+          {% for e in cat.ENCARGADOS %}<option value="{{ e }}">{{ e }}</option>{% endfor %}
+        </select>
+        <select class="f-filtro" data-seccion="donaciones">
+          <option value="">Toda asignación</option>
+          {% for a in cat.ASIGNACIONES %}<option value="{{ a }}">{{ a }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="tabla-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>Empresa</th><th>Contacto</th><th>Encargado</th><th>Tipo donación</th>
+              <th>Descripción</th><th>Valor aprox.</th><th>Asignación</th><th>Observaciones</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody-donaciones"></tbody>
+        </table>
+      </div>
+      <p class="vacio oculto" id="vacio-donaciones">Aún no hay registros. Agregue el primero con el formulario de arriba.</p>
+    </div>
+  </div>
+
+</main>
+
+<!-- Aviso flotante -->
+<div id="aviso" class="aviso oculto"></div>
+
+<!-- Confirmación de borrado -->
+<div id="modal-fondo" class="modal-fondo oculto">
+  <div class="modal">
+    <h3>Confirmar eliminación</h3>
+    <p id="modal-texto">¿Seguro que desea eliminar este registro?</p>
+    <div class="modal-acciones">
+      <button class="btn-secundario" id="modal-cancelar">Cancelar</button>
+      <button class="btn-peligro" id="modal-confirmar">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.AYUDAS = {
+    estados: {{ cat.ESTADOS_DESC | tojson }},
+    tiposDonacion: {{ cat.TIPOS_DONACION_DESC | tojson }},
+    asignaciones: {{ cat.ASIGNACIONES_DESC | tojson }},
+    seguimiento: {{ cat.SEGUIMIENTO_POR_TIPO | tojson }}
+  };
+</script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
