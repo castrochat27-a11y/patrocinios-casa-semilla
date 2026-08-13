@@ -22,17 +22,40 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # Conexión a la base de datos
 # Usa Postgres (Supabase/Render) si existe DATABASE_URL; si no, SQLite local.
 # ---------------------------------------------------------------------------
+SQLITE_URL = "sqlite:///" + os.path.join(BASE_DIR, "patrocinios.db")
+
+
+def crear_engine(url):
+    kwargs = {"pool_pre_ping": True}
+    if url.startswith("sqlite"):
+        kwargs["connect_args"] = {"check_same_thread": False}
+    else:
+        kwargs["pool_recycle"] = 280
+    return create_engine(url, **kwargs)
+
+
 DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-if not DATABASE_URL:
-    DATABASE_URL = "sqlite:///" + os.path.join(BASE_DIR, "patrocinios.db")
 
-engine_kwargs = {"pool_pre_ping": True}
-if DATABASE_URL.startswith("sqlite"):
-    engine_kwargs["connect_args"] = {"check_same_thread": False}
+# ESTADO_BD indica si la información se está guardando de forma permanente.
+# Si la conexión a Postgres falla, la página sigue funcionando con
+# almacenamiento temporal y muestra un aviso visible en pantalla.
+ESTADO_BD = {"permanente": False, "detalle": ""}
 
-engine = create_engine(DATABASE_URL, **engine_kwargs)
+if DATABASE_URL:
+    try:
+        engine = crear_engine(DATABASE_URL)
+        with engine.connect():
+            pass
+        ESTADO_BD["permanente"] = True
+    except Exception as error:  # noqa: BLE001
+        ESTADO_BD["detalle"] = str(error)[:200]
+        engine = crear_engine(SQLITE_URL)
+else:
+    ESTADO_BD["detalle"] = "No se configuró DATABASE_URL."
+    engine = crear_engine(SQLITE_URL)
+
 SessionLocal = scoped_session(sessionmaker(bind=engine, autoflush=False))
 Base = declarative_base()
 
@@ -334,6 +357,16 @@ def borrar(seccion, registro_id):
     db.delete(registro)
     db.commit()
     return "", 204
+
+
+@app.route("/api/estado-bd")
+def estado_bd():
+    return jsonify(
+        {
+            "permanente": ESTADO_BD["permanente"],
+            "detalle": ESTADO_BD["detalle"],
+        }
+    )
 
 
 @app.route("/api/resumen")
