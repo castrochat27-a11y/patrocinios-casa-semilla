@@ -313,7 +313,19 @@ function actualizarAyudas() {
     if (el) el.addEventListener("change", actualizarAyudas);
   });
 
+// ===================== Estado de la base de datos =====================
+async function verificarBaseDatos() {
+  try {
+    const res = await fetch("/api/estado-bd");
+    const d = await res.json();
+    document.getElementById("aviso-bd").classList.toggle("oculto", d.permanente === true);
+  } catch (e) {
+    /* silencioso */
+  }
+}
+
 // ===================== Inicio =====================
 Object.keys(SECCIONES).forEach((s) => cargar(s));
 cargarResumen();
 actualizarAyudas();
+verificarBaseDatos();
