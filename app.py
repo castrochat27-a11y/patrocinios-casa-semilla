@@ -1,6 +1,7 @@
 import io
 import os
 from datetime import datetime
+from urllib.parse import quote_plus
 
 from flask import Flask, jsonify, render_template, request, send_file
 from sqlalchemy import (
@@ -31,12 +32,38 @@ def crear_engine(url):
         kwargs["connect_args"] = {"check_same_thread": False}
     else:
         kwargs["pool_recycle"] = 280
+        # Límite de espera: evita que el arranque se quede bloqueado si el
+        # servidor de la base de datos no responde.
+        kwargs["connect_args"] = {"connect_timeout": 10}
     return create_engine(url, **kwargs)
 
 
-DATABASE_URL = os.environ.get("DATABASE_URL", "").strip()
-if DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+def construir_url(valor):
+    """Acepta la dirección completa de la base de datos o únicamente la contraseña.
+
+    Si en DATABASE_URL se escribe solo la contraseña, aquí se arma la dirección
+    completa y se codifican los caracteres especiales automáticamente.
+    """
+    valor = (valor or "").strip()
+    if not valor:
+        return ""
+
+    if valor.startswith("postgres://"):
+        return valor.replace("postgres://", "postgresql://", 1)
+    if valor.startswith("postgresql://"):
+        return valor
+
+    usuario = os.environ.get("DB_USER", "postgres.lurwsacrharocadxdahs")
+    host = os.environ.get("DB_HOST", "aws-0-ca-central-1.pooler.supabase.com")
+    puerto = os.environ.get("DB_PORT", "5432")
+    nombre = os.environ.get("DB_NAME", "postgres")
+    clave = quote_plus(valor)
+    return f"postgresql://{usuario}:{clave}@{host}:{puerto}/{nombre}"
+
+
+DATABASE_URL = construir_url(
+    os.environ.get("DATABASE_URL") or os.environ.get("DB_PASSWORD")
+)
 
 # ESTADO_BD indica si la información se está guardando de forma permanente.
 # Si la conexión a Postgres falla, la página sigue funcionando con
