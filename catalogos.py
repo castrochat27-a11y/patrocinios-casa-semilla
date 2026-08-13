@@ -1,97 +1,43 @@
-# Catálogos extraídos del archivo "Registro Patrocinios Casa Semilla.xlsx"
+# Catálogos del Control de Patrocinios y Donaciones
 
-ENCARGADOS = [
-    "Alejandro Pereira",
-    "Anthua Izabá",
-    "Bayron Oviedo",
-    "Brandon Ortega",
-    "Diego Wust",
-    "Fabiola Ortega",
-    "Gabriel Dittel",
-    "Gerardo Allan Castro",
-    "Jimena Castro",
-    "Leonela Mata",
-    "María José Chaves",
-    "Nicole Coto",
-    "Valeria Rojas",
-    "Verónica Lizano",
-]
-
-CLASIFICACIONES = [
-    "A contactar",
-    "No relevante",
-]
-
-LISTAS = [
-    "Lista anterior",
-    "Lista nueva",
-]
-
+# El estado determina en cuál pantalla aparece cada registro.
 ESTADOS = [
-    "Primer contacto",
-    "Interés/Evaluación",
-    "Negociación",
-    "Cierre/Confirmación",
-    "Activación/Registro",
-    "Negado",
+    "Pendiente de contactar",
+    "En espera de respuesta",
+    "En negociación",
+    "Aceptada",
+    "Donación realizada",
+    "Negada",
 ]
 
-# Descripciones mostradas como ayuda en la interfaz
 ESTADOS_DESC = {
-    "Primer contacto": "Envío de propuesta inicial, correo o contacto por redes o llamadas.",
-    "Interés/Evaluación": "El patrocinador muestra interés y solicita más información.",
-    "Negociación": "Se discute el monto o productos a recibir.",
-    "Cierre/Confirmación": "Se confirma oficialmente el patrocinio.",
-    "Activación/Registro": "Se registra y se pone a disposición del equipo de actividades.",
-    "Negado": "La empresa indica que no desea participar.",
+    "Pendiente de contactar": "Todavía no se ha hecho el primer contacto con la empresa.",
+    "En espera de respuesta": "Ya se envió la propuesta y se espera que respondan.",
+    "En negociación": "La empresa mostró interés y se está definiendo el aporte.",
+    "Aceptada": "La empresa confirmó el patrocinio, pero el aporte aún no se recibe.",
+    "Donación realizada": "El aporte ya fue entregado y recibido.",
+    "Negada": "La empresa indicó que no desea participar.",
 }
 
-TIPOS_PATROCINIO = [
-    "1 - Materiales para construcción",
-    "2 - DJ",
-    "3 - Licor para fiestas",
-    "4 - Brazaletes/entradas para fiestas",
-    "5 - Autobuses para fiestas",
-    "6 - Comida para ventas/actividades",
-    "7 - Cupones para rifas/bingos",
-    "8 - Productos para bingos",
-    "9 - Alcancías en supermercados",
-    "10 - Tours/Experiencias para bingo",
-    "11 - Mensualidades gimnasios",
-    "12 - Citas nutricionales/dentistas/salud",
-    "13 - Anuncios parroquiales/difusión en comunidades",
-    "14 - Instructores para clases (zumba, yoga, pilates, barre, etc)",
+# Clase de color usada en la interfaz para cada estado.
+ESTADOS_CLASE = {
+    "Pendiente de contactar": "e-pendiente",
+    "En espera de respuesta": "e-espera",
+    "En negociación": "e-negociacion",
+    "Aceptada": "e-aceptada",
+    "Donación realizada": "e-realizada",
+    "Negada": "e-negada",
+}
+
+# Estados que se consideran gestiones aún abiertas.
+ESTADOS_EN_PROCESO = [
+    "Pendiente de contactar",
+    "En espera de respuesta",
+    "En negociación",
 ]
 
-# Encargado de seguimiento por tipo de patrocinio (referencia del Excel)
-SEGUIMIENTO_POR_TIPO = {
-    "1 - Materiales para construcción": "Nicole Coto",
-    "2 - DJ": "Verónica Lizano",
-    "3 - Licor para fiestas": "Fabiola Ortega",
-    "4 - Brazaletes/entradas para fiestas": "Alejandro Pereira",
-    "5 - Autobuses para fiestas": "Diego Wust",
-    "6 - Comida para ventas/actividades": "Valeria Rojas",
-    "7 - Cupones para rifas/bingos": "Brandon Ortega",
-    "8 - Productos para bingos": "Leonela Mata",
-    "9 - Alcancías en supermercados": "María José Chaves",
-    "10 - Tours/Experiencias para bingo": "Anthua Izabá",
-    "11 - Mensualidades gimnasios": "Gerardo Allan Castro",
-    "12 - Citas nutricionales/dentistas/salud": "Bayron Oviedo",
-    "13 - Anuncios parroquiales/difusión en comunidades": "Jimena Castro",
-    "14 - Instructores para clases (zumba, yoga, pilates, barre, etc)": "Gabriel Dittel",
-}
-
-TIPOS_DONACION = [
-    "Producto/cupón para actividades",
-    "Producto para construcción",
-    "Contribución económica",
-]
-
-TIPOS_DONACION_DESC = {
-    "Producto/cupón para actividades": "Producto para rifas, ventas, fiestas, etc.",
-    "Producto para construcción": "Materiales para la construcción.",
-    "Contribución económica": "Donación monetaria.",
-}
+# Estado en el que el aporte ya fue recibido.
+ESTADO_RECIBIDO = "Donación realizada"
 
 ASIGNACIONES = [
     "Pendiente",
@@ -99,6 +45,6 @@ ASIGNACIONES = [
 ]
 
 ASIGNACIONES_DESC = {
-    "Asignado": "Se pone a disposición de los otros equipos.",
-    "Pendiente": "No se ha destinado la donación.",
+    "Pendiente": "El aporte todavía no se ha destinado a ninguna actividad.",
+    "Asignado": "Ya se puso a disposición de otro equipo o actividad.",
 }
